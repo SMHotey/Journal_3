@@ -4,22 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="620efd20-256c-4a2e-9d80-9258de3d0674" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/journal_3.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/journal_3/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/journal_3/asgi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/journal_3/settings.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/journal_3/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/journal_3/wsgi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/manage.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orders/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orders/templates/order.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orders/templates/upload.html" afterDir="false" />
+    <list default="true" id="620efd20-256c-4a2e-9d80-9258de3d0674" name="Changes" comment="1">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orders/templates/order.html" beforeDir="false" afterPath="$PROJECT_DIR$/orders/templates/order.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,11 +94,24 @@
       <option name="presentableId" value="Default" />
       <updated>1723038447879</updated>
       <workItem from="1723038449296" duration="164000" />
-      <workItem from="1723039589953" duration="632000" />
+      <workItem from="1723039589953" duration="1913000" />
     </task>
+    <task id="LOCAL-00001" summary="1">
+      <option name="closed" value="true" />
+      <created>1723040441386</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1723040441386</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="1" />
+    <option name="LAST_COMMIT_MESSAGE" value="1" />
   </component>
 </project>
