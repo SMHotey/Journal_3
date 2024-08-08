@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список заказов</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <style>
+    .custom-cell {
+        font-size: 20px; /* Увеличьте размер шрифта по необходимости */
+        color: green;
+        font-weight: bold;
+        text-decoration: underline;
+    }
+    </style>
+    
+
+    <script id="glass-order-{{ order.id }}" type="application/json">
+        {{ order.glass_order|json_script }}
+    </script>
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Список заказов</h1>
+    
+    <table class="table table-bordered text-center">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>1 НК</th>
+                <th>1 СК</th>
+                <th>2 НК</th>
+                <th>2 СК</th>
+                <th>Люк НК</th>
+                <th>Люк СК</th>
+                <th>Ворота</th>
+                <th>Стекло</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td class="custom-cell">{{ order.number }}</td>
+                <td>{{ order.doors_nk }}</td>
+                <td>{{ order.doors_sk }}</td>
+                <td>{{ order.doors_2nk }}</td>
+                <td>{{ order.doors_2sk }}</td>
+                <td>{{ order.hatches_nk }}</td>
+                <td>{{ order.hatches_sk }}</td>
+                <td>{{ order.gates }}</td>
+                <td>
+                    {% if order.glass_order %}
+                        <button class="btn btn-info btn-glass" 
+                                onclick="showGlassOrder('{{ order.id }}')">
+                            Стекло
+                        </button>
+                    {% endif %}
+                </td>
+                <td>
+                    
+                    <a href="{% url 'delete_order' order.number %}">Удалить</a>
+                </td>
+            
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function showGlassOrder(orderId) {
+        const glassOrderElement = document.getElementById(`glass-order-${orderId}`);
+        const glassOrderData = JSON.parse(glassOrderElement.textContent);
+
+        let tableHtml = '<table border="1">';
+        tableHtml += '<tr><th>Размер стекла</th><th>Количество</th></tr>';
+
+        for (const [size, quantity] of Object.entries(glassOrderData)) {
+            tableHtml += `<tr><td>${size}</td><td>${quantity}</td></tr>`;
+        }
+
+        tableHtml += '</table>';
+        
+        // Создаем модальное окно
+        const modal = document.createElement('div');
+        modal.style.position = 'fixed';
+        modal.style.top = '50%';
+        modal.style.left = '50%';
+        modal.style.transform = 'translate(-50%, -50%)';
+        modal.style.backgroundColor = 'white';
+        modal.style.border = '1px solid #ccc';
+        modal.style.padding = '20px';
+        modal.style.zIndex = '1000';
+        
+        // Добавляем кнопку для закрытия модального окна
+        const closeButton = document.createElement('button');
+        closeButton.textContent = 'Закрыть';
+        closeButton.onclick = () => document.body.removeChild(modal);
+        
+        modal.innerHTML = tableHtml;
+        modal.appendChild(closeButton);
+        document.body.appendChild(modal);
+    }
+</script>
+</body>
+</html>

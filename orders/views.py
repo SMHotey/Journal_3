@@ -1,14 +1,20 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import UploadFileForm
 from openpyxl import load_workbook
 import re
 
+from .models import Order
+
+
+def delete_order(request, order_id):
+    order = get_object_or_404(Order, number=order_id)
+    if request.method == 'POST':
+        order.delete()
+        return redirect('orders_list')  # переадресация на список заказов
+    return render(request, 'orders/delete_order.html', {'order': order})
+
 
 def order_view(request):
-    doors_nk, doors_2nk, hatches_nk = 0, 0, 0
-    doors_sk, doors_2sk, hatches_sk, gates = 0, 0, 0, 0
-    glass_order = {}
-
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -16,6 +22,11 @@ def order_view(request):
 
             wb = load_workbook(uploaded_file)
             sheet = wb.active
+
+            doors_nk, doors_2nk, hatches_nk = 0, 0, 0
+            doors_sk, doors_2sk, hatches_sk, gates = 0, 0, 0, 0
+            glass_order = {}
+
             max_row, cur_column = 9, 15
             line = []
             order = []
@@ -88,20 +99,25 @@ def order_view(request):
                 if order[i].glasses[0]:
                     for glass in range(0, len(order[i].glasses), 2):
                         key = (order[i].glasses[glass], order[i].glasses[glass + 1])
-                        glass_order[key] = glass_order.get(key, 0) + order[i].quantity
+                        glass_order[str(key)] = glass_order.get(str(key), 0) + order[i].quantity
 
-        context = {
-            'doors_nk': doors_nk,
-            'doors_sk': doors_sk,
-            'doors_2nk': doors_2nk,
-            'doors_2sk': doors_2sk,
-            'hatches_nk': hatches_nk,
-            'hatches_sk': hatches_sk,
-            'gates': gates,
-            'glass_order': glass_order,
-        }
-        return render(request, 'order.html', context)
-    else:
-        form = UploadFileForm()
+            order = Order(
+                doors_nk=doors_nk,
+                doors_sk=doors_sk,
+                doors_2nk=doors_2nk,
+                doors_2sk=doors_2sk,
+                hatches_nk=hatches_nk,
+                hatches_sk=hatches_sk,
+                gates=gates,
+                glass_order=str(glass_order)
+            )
+            order.save()
+            return render(request, 'success.html')
 
+    form = UploadFileForm()
     return render(request, 'upload.html', {'form': form})
+
+
+def orders_list(request):
+    orders = Order.objects.all()
+    return render(request, 'orders_list.html', {'orders': orders})
