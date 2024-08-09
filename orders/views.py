@@ -34,7 +34,7 @@ def order_view(request):
 
             class Position:
                 def __init__(self, num_position, name, high, length, active_length, direction, trim,
-                             accessories, closer, doorstep, ral, quantity, comment,  *glasses):
+                             accessories, closer, doorstep, ral, quantity, comment, *glasses):
                     self.num_position = num_position
                     self.name = name
                     self.high = high
@@ -101,7 +101,6 @@ def order_view(request):
                     for glass in range(0, len(order[i].glasses), 2):
                         key = (order[i].glasses[glass], order[i].glasses[glass + 1])
                         glass_order[str(key)] = glass_order.get(str(key), 0) + order[i].quantity
-                        print(glass_order)
 
                 if re.search('фрамуга', name.lower()):
                     vent += quantity
@@ -116,7 +115,6 @@ def order_view(request):
                 gates=gates,
                 glass_order=glass_order,
                 vent=vent
-
 
             )
             order.save()

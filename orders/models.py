@@ -18,6 +18,9 @@ class Order(models.Model):
 #    invoice = models.IntegerField(default=0)
 
     glass_order = models.JSONField(default=dict)
-
     def __str__(self):
         return f"Заказ №{self.number}"
+
+    def get_total_glass_order(self):
+        return sum(self.glass_order.values())
+
