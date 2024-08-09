@@ -25,6 +25,7 @@ def order_view(request):
 
             doors_nk, doors_2nk, hatches_nk = 0, 0, 0
             doors_sk, doors_2sk, hatches_sk, gates = 0, 0, 0, 0
+            vent = 0
             glass_order = {}
 
             max_row, cur_column = 9, 15
@@ -33,7 +34,7 @@ def order_view(request):
 
             class Position:
                 def __init__(self, num_position, name, high, length, active_length, direction, trim,
-                             accessories, closer, doorstep, ral, quantity, comment, *glasses):
+                             accessories, closer, doorstep, ral, quantity, comment,  *glasses):
                     self.num_position = num_position
                     self.name = name
                     self.high = high
@@ -89,7 +90,7 @@ def order_view(request):
                         doors_sk += quantity
 
                 if re.search('ворота', name.lower()):
-                    gates += order[i].quantity
+                    gates += quantity
                 if re.search('люк', name.lower()):
                     if re.search('-м', name.lower()):
                         hatches_nk += quantity
@@ -100,6 +101,10 @@ def order_view(request):
                     for glass in range(0, len(order[i].glasses), 2):
                         key = (order[i].glasses[glass], order[i].glasses[glass + 1])
                         glass_order[str(key)] = glass_order.get(str(key), 0) + order[i].quantity
+                        print(glass_order)
+
+                if re.search('фрамуга', name.lower()):
+                    vent += quantity
 
             order = Order(
                 doors_nk=doors_nk,
@@ -109,7 +114,10 @@ def order_view(request):
                 hatches_nk=hatches_nk,
                 hatches_sk=hatches_sk,
                 gates=gates,
-                glass_order=str(glass_order)
+                glass_order=glass_order,
+                vent=vent
+
+
             )
             order.save()
             return render(request, 'success.html')

@@ -7,18 +7,13 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <style>
-    .custom-cell {
-        font-size: 20px; /* Увеличьте размер шрифта по необходимости */
-        color: green;
-        font-weight: bold;
-        text-decoration: underline;
-    }
+        .custom-cell {
+            font-size: 20px;
+            color: green;
+            font-weight: bold;
+            text-decoration: underline;
+        }
     </style>
-    
-
-    <script id="glass-order-{{ order.id }}" type="application/json">
-        {{ order.glass_order|json_script }}
-    </script>
 </head>
 <body>
 <div class="container mt-5">
@@ -35,7 +30,9 @@
                 <th>Люк НК</th>
                 <th>Люк СК</th>
                 <th>Ворота</th>
+                <th>Фрамуга</th>
                 <th>Стекло</th>
+                <th>Действия</th>
             </tr>
         </thead>
         <tbody>
@@ -49,20 +46,22 @@
                 <td>{{ order.hatches_nk }}</td>
                 <td>{{ order.hatches_sk }}</td>
                 <td>{{ order.gates }}</td>
+                <td>{{ order.vent }}</td>
                 <td>
                     {% if order.glass_order %}
                         <button class="btn btn-info btn-glass" 
-                                onclick="showGlassOrder('{{ order.id }}')">
+                                onclick="showGlassOrder('{{ order.number }}')">
                             Стекло
                         </button>
                     {% endif %}
                 </td>
                 <td>
-                    
                     <a href="{% url 'delete_order' order.number %}">Удалить</a>
                 </td>
-            
             </tr>
+            <script id="glass-order-{{ order.number }}" type="application/json">
+                {{ order.glass_order|json_script }}
+            </script>
             {% endfor %}
         </tbody>
     </table>
@@ -71,18 +70,20 @@
 <script>
     function showGlassOrder(orderId) {
         const glassOrderElement = document.getElementById(`glass-order-${orderId}`);
-        const glassOrderData = JSON.parse(glassOrderElement.textContent);
+        const jsonString = glassOrderElement.innerHTML;
+        const jsonData = jsonString.replace(/<script.*?>|<\/script>/g, '').trim();
+        const glassOrderData = JSON.parse(jsonData);
 
-        let tableHtml = '<table border="1">';
-        tableHtml += '<tr><th>Размер стекла</th><th>Количество</th></tr>';
-
+        let tableHtml = '<table class="table table-bordered text-center"><tr><th>Размер стекла</th><th>Количество</th></tr>';
         for (const [size, quantity] of Object.entries(glassOrderData)) {
             tableHtml += `<tr><td>${size}</td><td>${quantity}</td></tr>`;
         }
-
         tableHtml += '</table>';
-        
-        // Создаем модальное окно
+
+        createModal(tableHtml);
+    }
+
+    function createModal(tableHtml) {
         const modal = document.createElement('div');
         modal.style.position = 'fixed';
         modal.style.top = '50%';
@@ -92,12 +93,24 @@
         modal.style.border = '1px solid #ccc';
         modal.style.padding = '20px';
         modal.style.zIndex = '1000';
-        
-        // Добавляем кнопку для закрытия модального окна
+
+        const overlay = document.createElement('div');
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        overlay.style.zIndex = '999';
+        document.body.appendChild(overlay);
+
         const closeButton = document.createElement('button');
         closeButton.textContent = 'Закрыть';
-        closeButton.onclick = () => document.body.removeChild(modal);
-        
+        closeButton.onclick = () => {
+            document.body.removeChild(modal);
+            document.body.removeChild(overlay);
+        };
+
         modal.innerHTML = tableHtml;
         modal.appendChild(closeButton);
         document.body.appendChild(modal);

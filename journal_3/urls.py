@@ -19,6 +19,6 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('orders.urls')),  # Теперь `upload/` и `orders/` будут доступны
+    path('', include('orders.urls')),
 ]
 
