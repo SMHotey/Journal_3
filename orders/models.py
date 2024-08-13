@@ -9,7 +9,7 @@ class Department(models.Model):
 
 
 class Employee(models.Model):
-    username = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     phone = models.CharField(max_length=15)
@@ -18,13 +18,13 @@ class Employee(models.Model):
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     supervisor = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL,
                                    related_name='subordinates')  # начальник сотрудника
-    permissions = models.JSONField(default=list)  # Хранение прав как список
+    permissions = models.JSONField(default=list, null=True)  # Хранение прав как список
 
     def has_permission(self, permission):
         return permission in self.permissions
 
 
-class Organization(models.Model):
+class Organisation(models.Model):
     name = models.CharField(max_length=100)
     inn = models.IntegerField(default=0)
     city = models.CharField(max_length=25)
@@ -45,7 +45,7 @@ class Invoice(models.Model):  #счёт
     date = models.DateField()
     palani = models.ForeignKey(Provider, on_delete=models.CASCADE)
     total_sum = models.DecimalField(max_digits=10, decimal_places=2)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE)
 
 
 class Order(models.Model):
@@ -59,8 +59,8 @@ class Order(models.Model):
     )
     order_id = models.AutoField(primary_key=True)
     created = models.DateTimeField(auto_now_add=True)
-    organisation = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    created_by = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='in_query')
     doors_nk = models.IntegerField(default=0)
     doors_sk = models.IntegerField(default=0)
@@ -74,6 +74,7 @@ class Order(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
     glass_order = models.JSONField(default=dict)
     total_glasses = models.IntegerField(default=0)
+
 
 
     def __str__(self):

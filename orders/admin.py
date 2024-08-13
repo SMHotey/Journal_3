@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Order, Department, Organization, Employee, Invoice
+from .models import Order, Department, Organisation, Employee, Invoice
 
 admin.site.register(Order)
 
@@ -10,16 +10,16 @@ class DepartmentAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 
-@admin.register(Organization)
-class OrganizationAdmin(admin.ModelAdmin):
+@admin.register(Organisation)
+class OrganisationAdmin(admin.ModelAdmin):
     list_display = ['name']
     search_fields = ['name']
 
 
 @admin.register(Employee)
-class OrganizationAdmin(admin.ModelAdmin):
-    list_display = ['inn']
-    search_fields = ['inn']
+class EmployeeAdmin(admin.ModelAdmin):
+    list_display = ['name']
+    search_fields = ['name']
 
 
 @admin.register(Invoice)
