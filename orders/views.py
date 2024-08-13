@@ -114,7 +114,8 @@ def order_view(request):
                 hatches_sk=hatches_sk,
                 gates=gates,
                 glass_order=glass_order,
-                vent=vent
+                vent=vent,
+                total_glasses=sum(glass_order.values()),
 
             )
             order.save()
@@ -127,3 +128,5 @@ def order_view(request):
 def orders_list(request):
     orders = Order.objects.all()
     return render(request, 'orders_list.html', {'orders': orders})
+
+

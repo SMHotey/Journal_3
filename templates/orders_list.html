@@ -46,7 +46,7 @@
         <tbody>
             {% for order in orders %}
             <tr>
-                <td class="custom-cell">{{ order.number }}</td>
+                <td class="custom-cell">{{ order.order_id }}</td>
                 <td>{{ order.doors_nk }}</td>
                 <td>{{ order.doors_sk }}</td>
                 <td>{{ order.doors_2nk }}</td>
@@ -58,16 +58,16 @@
                 <td>
                     {% if order.glass_order %}
                         <button class="btn btn-info" 
-                                onclick="showGlassOrder('{{ order.number }}')" data-toggle="modal" data-target="#glassOrderModal">
-                            +
+                                onclick="showGlassOrder('{{ order.order_id }}')" data-toggle="modal" data-target="#glassOrderModal">
+                            {{ order.total_glass_order }}
                         </button>
                     {% endif %}
                 </td>
                 <td>
-                    <a href="{% url 'delete_order' order.number %}">Удалить</a>
+                    <a href="{% url 'delete_order' order.order_id %}">Удалить</a>
                 </td>
             </tr>
-            <script id="glass-order-{{ order.number }}" type="application/json">
+            <script id="glass-order-{{ order.order_id }}" type="application/json">
                 {{ order.glass_order|json_script }}
             </script>
             {% endfor %}
