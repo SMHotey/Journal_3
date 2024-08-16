@@ -7,6 +7,12 @@ class Department(models.Model):
     name = models.CharField(max_length=100)
     director = models.CharField(max_length=100)
 
+    class Meta:
+        verbose_name_plural = 'Отделы'
+
+    def __str__(self):
+        return self.name
+
 
 class Employee(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -18,34 +24,50 @@ class Employee(models.Model):
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     supervisor = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL,
                                    related_name='subordinates')  # начальник сотрудника
-    permissions = models.JSONField(default=list, null=True)  # Хранение прав как список
+    permissions = models.JSONField(default=list, null=True, blank=True)  # Хранение прав как список
 
     def has_permission(self, permission):
         return permission in self.permissions
 
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'Сотрудники'
+
 
 class Organisation(models.Model):
     name = models.CharField(max_length=100)
-    inn = models.IntegerField(default=0)
+    inn = models.CharField(max_length=15)
     city = models.CharField(max_length=25)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'Организации'
 
 
-class Provider(models.Model):  #наше юр. лицо
+class Invoice(models.Model):  #счёт
     PALANI_CHOICES = (
         ('P', 'Палани'),
         ('PI', 'Палани Инжиниринг'),
         ('PD', 'Палани Дистрибуция'),
         ('GP', 'Глобал Палани'),
     )
-    palani = models.CharField(max_length=25, choices=PALANI_CHOICES, default='PI')
-
-
-class Invoice(models.Model):  #счёт
     number = models.IntegerField()
     date = models.DateField()
-    palani = models.ForeignKey(Provider, on_delete=models.CASCADE)
+    palani = models.CharField(max_length=25, choices=PALANI_CHOICES, default='PI', verbose_name="Счет от")
     total_sum = models.DecimalField(max_digits=10, decimal_places=2)
     organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = 'Cчета'
+
+    def __str__(self):
+        return self.number
 
 
 class Order(models.Model):
@@ -72,14 +94,12 @@ class Order(models.Model):
     vent = models.IntegerField(default=0)
     others = models.IntegerField(default=0)
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
-    glass_order = models.JSONField(default=dict)
+    glass_order = models.JSONField(default=dict, null=True, blank=True)
     total_glasses = models.IntegerField(default=0)
 
-
+    class Meta:
+        verbose_name_plural = 'Заказы'
 
     def __str__(self):
-        return f"Заказ №{self.order_id}"
-
-
-
+        return self.order_id
 
